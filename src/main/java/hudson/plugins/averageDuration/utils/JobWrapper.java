@@ -11,8 +11,10 @@ import java.util.logging.Logger;
 public class JobWrapper<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>> {
     private static final Logger LOGGER = Logger.getLogger(JobWrapper.class.getName());
     private final Job<JobT, RunT> job;
+    private int candidates = 3;
+    private int stepsBack = 6;
 
-//    @SuppressWarnings("unchecked")
+
     public JobWrapper(Job<JobT,RunT> job) {
         this.job = job;
     }

@@ -1,0 +1,12 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project">
+    <f:section title="Average Build Duration Config" name="average-duration">
+        <f:entry title="${%Number of Candidates}">
+        <!--<st:out value="${it.displayname}"/>-->
+            <f:number name="average-duration" value="123"/>
+        </f:entry>
+    </f:section>
+
+
+</j:jelly>
