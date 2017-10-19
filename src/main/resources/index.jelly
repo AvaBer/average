@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    Displays the estimated duration of a job but with a larger pool on the dashboard views and project view.
+    Displays the estimated build duration of a project in the project REST api and as a view column.
 </div>
