@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<com.tikal.jenkins.plugins.multijob.MultiJobBuild plugin="jenkins-multijob-plugin@1.28">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause/>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <org.jenkinsci.plugins.envinject.EnvInjectPluginAction plugin="envinject@2.1.4"/>
+  </actions>
+  <queueId>1</queueId>
+  <timestamp>1507900627413</timestamp>
+  <startTime>1507900627419</startTime>
+  <result>SUCCESS</result>
+  <duration>517</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace</workspace>
+  <hudsonVersion>2.7.3</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits class="com.google.common.collect.EmptyImmutableSortedSet"/>
+  <subBuilds class="java.util.concurrent.CopyOnWriteArrayList"/>
+  <changeSets>
+    <run class="com.tikal.jenkins.plugins.multijob.MultiJobBuild" reference="../.."/>
+    <build class="com.tikal.jenkins.plugins.multijob.MultiJobBuild" reference="../.."/>
+  </changeSets>
+  <subBuildsMap/>
+</com.tikal.jenkins.plugins.multijob.MultiJobBuild>

@@ -1,0 +1,19 @@
+Started by user [8mha:AAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzOEgYu/dLi1CL9vNKcHACFIKlWvwAAAA==[0manonymous
+[EnvInject] - Loading node environment variables.
+Building in workspace C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace
+Run condition [Not] preventing prebuild for step [Execute Windows batch command]
+Run condition [Not] preventing prebuild for step [Execute Windows batch command]
+Run condition [File exists] enabling prebuild for step [Execute Windows batch command]
+[File exists] check if file exists [Main.java]
+Run condition [Not] preventing perform for step [Execute Windows batch command]
+[File exists] check if file exists [Main.class]
+Run condition [Not] preventing perform for step [Execute Windows batch command]
+[File exists] check if file exists [Main.class]
+Run condition [File exists] enabling perform for step [Execute Windows batch command]
+[workspace] $ cmd /c call C:\Users\ribe\AppData\Local\Temp\hudson756489382271574888.bat
+
+C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace>java Main true  
+
+C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace>exit 1 
+Build step 'Conditional step (single)' marked build as failure
+Finished: FAILURE

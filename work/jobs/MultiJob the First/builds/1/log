@@ -1,0 +1,21 @@
+Started by user [8mha:AAAAlh+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzOEgYu/dLi1CL9vNKcHACFIKlWvwAAAA==[0manonymous
+[EnvInject] - Loading node environment variables.
+Building in workspace C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace
+[workspace] $ cmd /c call C:\Users\ribe\AppData\Local\Temp\hudson1474958927070344694.bat
+
+C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace>echo "Wawa!" 
+"Wawa!"
+
+C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace>dir
+ Volume in drive C is OSDisk
+ Volume Serial Number is 8E1E-522D
+
+ Directory of C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace
+
+2017-10-13  15:17    <DIR>          .
+2017-10-13  15:17    <DIR>          ..
+               0 File(s)              0 bytes
+               2 Dir(s)  151ÿ213ÿ899ÿ776 bytes free
+
+C:\dev\workspace-the-second\nextbuildestimatedduration\work\jobs\MultiJob the First\workspace>exit 0 
+Finished: SUCCESS
