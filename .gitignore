@@ -1,4 +1,5 @@
 .idea
 averageduration.iml
 target
-work
+!work/jobs/
+work/

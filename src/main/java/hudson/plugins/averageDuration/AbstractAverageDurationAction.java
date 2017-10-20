@@ -16,14 +16,15 @@ import java.util.logging.Logger;
 @ExportedBean(defaultVisibility=2)
 public class AbstractAverageDurationAction <JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>> implements Action {
     private static final Logger LOGGER = Logger.getLogger(AbstractAverageDurationAction.class.getName());
-    private final AverageDuration averageDuration;
+    private final AverageDuration averageDuration = AverageDuration.getInstance();
     private final Job<JobT,RunT> project;
 
-//    @SuppressWarnings("unchecked")
+
+    @SuppressWarnings("unchecked")
     @DataBoundConstructor
     public AbstractAverageDurationAction(Job<JobT,RunT> project) {
         this.project = project;
-        averageDuration = new AverageDuration<JobT, RunT>(getProject());
+        averageDuration.setJob(project);
     }
 
     @CheckForNull

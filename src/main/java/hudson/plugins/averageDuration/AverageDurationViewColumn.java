@@ -10,14 +10,16 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class AverageDurationViewColumn extends ListViewColumn {
 
-
     @DataBoundConstructor
     public AverageDurationViewColumn() {
         super();
     }
 
+    @SuppressWarnings("unchecked")
     public String getAverageBuildDurationString(Job<?, ?> job) {
-        return Util.getTimeSpanString(new AverageDuration(job).getEstimatedDuration());
+        AverageDuration avgDuration = AverageDuration.getInstance();
+        avgDuration.setJob(job);
+        return Util.getTimeSpanString(avgDuration.getEstimatedDuration());
     }
 
     @Extension(ordinal=DEFAULT_COLUMNS_ORDINAL_PROPERTIES_START-5)
