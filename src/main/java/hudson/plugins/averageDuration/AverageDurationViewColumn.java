@@ -3,7 +3,7 @@ package hudson.plugins.averageDuration;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Job;
-import hudson.plugins.averageDuration.utils.JobWrapper;
+import hudson.plugins.averageDuration.utils.AverageDuration;
 import hudson.views.ListViewColumn;
 import hudson.views.ListViewColumnDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -17,7 +17,7 @@ public class AverageDurationViewColumn extends ListViewColumn {
     }
 
     public String getAverageBuildDurationString(Job<?, ?> job) {
-        return Util.getTimeSpanString(new JobWrapper(job).getEstimatedDuration());
+        return Util.getTimeSpanString(new AverageDuration(job).getEstimatedDuration());
     }
 
     @Extension(ordinal=DEFAULT_COLUMNS_ORDINAL_PROPERTIES_START-5)

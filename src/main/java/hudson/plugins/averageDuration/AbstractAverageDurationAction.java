@@ -5,7 +5,7 @@ import hudson.model.Action;
 import hudson.model.Api;
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.plugins.averageDuration.utils.JobWrapper;
+import hudson.plugins.averageDuration.utils.AverageDuration;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -16,14 +16,14 @@ import java.util.logging.Logger;
 @ExportedBean(defaultVisibility=2)
 public class AbstractAverageDurationAction <JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>> implements Action {
     private static final Logger LOGGER = Logger.getLogger(AbstractAverageDurationAction.class.getName());
-    private final JobWrapper jobWrapper;
+    private final AverageDuration averageDuration;
     private final Job<JobT,RunT> project;
 
 //    @SuppressWarnings("unchecked")
     @DataBoundConstructor
     public AbstractAverageDurationAction(Job<JobT,RunT> project) {
         this.project = project;
-        jobWrapper = new JobWrapper<JobT, RunT>(getProject());
+        averageDuration = new AverageDuration<JobT, RunT>(getProject());
     }
 
     @CheckForNull
@@ -44,8 +44,8 @@ public class AbstractAverageDurationAction <JobT extends Job<JobT, RunT>, RunT e
         return null;
     }
 
-    public JobWrapper getJobWrapper() {
-        return jobWrapper;
+    public AverageDuration getAverageDuration() {
+        return averageDuration;
     }
 
     public Job<JobT, RunT> getProject() {
@@ -60,7 +60,7 @@ public class AbstractAverageDurationAction <JobT extends Job<JobT, RunT>, RunT e
     }
     @Exported
     public String getAverageBuildDuration() {
-        long averageDuration = getJobWrapper().getEstimatedDuration();
+        long averageDuration = getAverageDuration().getEstimatedDuration();
         if (averageDuration > 0)
             return Util.getTimeSpanString(averageDuration);
         return "N/A";
