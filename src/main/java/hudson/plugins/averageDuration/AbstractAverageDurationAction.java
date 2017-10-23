@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 @ExportedBean(defaultVisibility=2)
 public class AbstractAverageDurationAction <JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>> implements Action {
     private static final Logger LOGGER = Logger.getLogger(AbstractAverageDurationAction.class.getName());
-    private final AverageDuration averageDuration = AverageDuration.getInstance();
+    private final AverageDuration averageDuration = new AverageDuration();
     private final Job<JobT,RunT> project;
 
 

@@ -1,0 +1,14 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project">
+    <f:section title="Average Build Duration Config" name="average-duration">
+        <!--<j:set var="avg" value="${descriptor.avg}"/>-->
+        <f:entry title="${%Number of steps back in history:}" field="stepsBack">
+            <f:textbox value="${descriptor.avg.stepsBack}"/>
+        </f:entry>
+        <f:entry title="${%Number of Candidates to use:}" field="candidates">
+            <f:textbox value="${descriptor.avg.candidates}"/>
+        </f:entry>
+    </f:section>
+
+</j:jelly>

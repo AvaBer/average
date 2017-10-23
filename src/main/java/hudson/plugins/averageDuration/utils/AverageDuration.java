@@ -6,6 +6,8 @@ import hudson.model.*;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -19,30 +21,31 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @SuppressWarnings("WeakerAccess")
 public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>>
-        extends Plugin implements Describable<AverageDuration<JobT, RunT>> {
+        implements Describable<AverageDuration<JobT, RunT>> {
     private static final Logger LOGGER = Logger.getLogger(AverageDuration.class.getName());
 
     /* ******** AverageDuration Instance ******** */
-    private static AverageDuration instance = null;
+//    private static AverageDuration instance = null;
 
+    @DataBoundConstructor
     public AverageDuration() {
-        instance = this;
+//        instance = this;
     }
 
-    public static AverageDuration getInstance() {
-        return instance;
-    }
+//    public static AverageDuration getInstance() {
+//        return instance;
+//    }
 
 //    public AverageDuration(Job<JobT, RunT> job) {
 //        this.job = job;
 //    }
 
     /* *************** PluginImpl *************** */
-    @Override
-    public void start() throws Exception {
-        super.start();
-        load();
-    }
+//    @Override
+//    public void start() throws Exception {
+//        super.start();
+//        load();
+//    }
 
     /* ***************** Config ***************** */
     private int candidates = 3;
@@ -50,10 +53,12 @@ public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT
     public final int DEFAULT_NUMBER_OF_CANDIDATES = 3;
     public final int DEFAULT_NUMBER_OF_STEPS_BACK = 6;
 
+    @DataBoundSetter
     public void setCandidates(int candidates) {
         this.candidates = candidates;
     }
 
+    @DataBoundSetter
     public void setStepsBack(int stepsBack) {
         this.stepsBack = stepsBack;
     }
@@ -68,7 +73,7 @@ public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT
 
     /* *********** Average Build Time *********** */
 
-    private Job<JobT, RunT> job;
+    private transient Job<JobT, RunT> job;
 
     public void setJob(Job<JobT, RunT> job) {
         this.job = job;
@@ -94,6 +99,7 @@ public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT
     }
 
     private List<RunT> getEstimatedDurationCandidates() {
+        LOGGER.info("Candidates: " + getCandidates() + " StepsBack: " + getStepsBack());
         List<RunT> candidates = new ArrayList<RunT>(getCandidates());
         List<RunT> fallbackCandidates = new ArrayList<RunT>(getCandidates());
         RunT lastSuccessful = getLastSuccessfulBuild();
@@ -134,7 +140,11 @@ public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT
 
     @Extension(optional = true)
     public static class DescriptorImpl<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>> extends Descriptor<AverageDuration<JobT, RunT>> {
-        private AverageDuration avg = AverageDuration.getInstance();
+        private AverageDuration avg = new AverageDuration();
+
+        public AverageDuration getAvg() {
+            return avg;
+        }
 
         @Nonnull
         @Override
@@ -144,15 +154,17 @@ public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-            req.bindParameters(AverageDuration.getInstance());
+//            avg = req.bindParameters(AverageDuration.class,"average-duration");
+            req.bindJSON(new AverageDuration<JobT, RunT>(), json);
             save();
-            return super.configure(req, json);
+            return true;
         }
 
         public FormValidation doCheckCandidates(@QueryParameter String candidates) {
+            LOGGER.info(candidates);
             if (isEmpty(candidates.trim())) {
                 avg.setCandidates(avg.DEFAULT_NUMBER_OF_CANDIDATES);
-                return FormValidation.ok("Using default value of: " + getInstance().DEFAULT_NUMBER_OF_CANDIDATES);
+                return FormValidation.ok("Using default value of: " + avg.DEFAULT_NUMBER_OF_CANDIDATES);
             } else {
                 int newValue;
                 try {
@@ -163,7 +175,7 @@ public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT
                 if (newValue < 1)
                     return FormValidation.error("Value cannot be set to zero");
                 if (checkValues(newValue, avg.getCandidates(), avg.getStepsBack(), "candidates")) {
-//                    avg.setCandidates(newValue);
+                    avg.setCandidates(newValue);
                     return FormValidation.ok();
                 }
                 return FormValidation.error("Number of candidates must be equal to or smaller than number of steps back ");
@@ -171,9 +183,10 @@ public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT
         }
 
         public FormValidation doCheckStepsBack(@QueryParameter String stepsBack) {
+            LOGGER.info(stepsBack);
             if (isEmpty(stepsBack.trim())) {
-                avg.setCandidates(avg.DEFAULT_NUMBER_OF_STEPS_BACK);
-                return FormValidation.ok("Using default value of: " + getInstance().DEFAULT_NUMBER_OF_STEPS_BACK);
+                avg.setStepsBack(avg.DEFAULT_NUMBER_OF_STEPS_BACK);
+                return FormValidation.ok("Using default value of: " + avg.DEFAULT_NUMBER_OF_STEPS_BACK);
             } else {
                 int newValue;
                 try {
@@ -184,7 +197,7 @@ public class AverageDuration<JobT extends Job<JobT, RunT>, RunT extends Run<JobT
                 if (newValue < 1)
                     return FormValidation.error("Value cannot be set to zero");
                 if (checkValues(newValue, avg.getStepsBack(), avg.getCandidates(), "stepsBack")) {
-//                    avg.setStepsBack(stepsBack);
+                    avg.setStepsBack(newValue);
                     return FormValidation.ok();
                 }
                 return FormValidation.error("Number of steps back must be equal to or greater than number of candidates ");
