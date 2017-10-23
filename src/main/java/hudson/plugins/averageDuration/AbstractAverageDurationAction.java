@@ -4,8 +4,7 @@ import hudson.Util;
 import hudson.model.Action;
 import hudson.model.Api;
 import hudson.model.Job;
-import hudson.model.Run;
-import hudson.plugins.averageDuration.utils.AverageDuration;
+import hudson.plugins.averageDuration.utils.JobWrapper;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -14,17 +13,18 @@ import javax.annotation.CheckForNull;
 import java.util.logging.Logger;
 
 @ExportedBean(defaultVisibility=2)
-public class AbstractAverageDurationAction <JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>> implements Action {
+public class AbstractAverageDurationAction implements Action {
     private static final Logger LOGGER = Logger.getLogger(AbstractAverageDurationAction.class.getName());
-    private final AverageDuration averageDuration = new AverageDuration();
-    private final Job<JobT,RunT> project;
+//    private final AverageDuration averageDuration = new AverageDuration();
+    private JobWrapper jobWrapper = new AverageDuration().getJobWrapper();
+    private final Job<?,?> project;
 
 
     @SuppressWarnings("unchecked")
     @DataBoundConstructor
-    public AbstractAverageDurationAction(Job<JobT,RunT> project) {
+    public AbstractAverageDurationAction(Job<?,?> project) {
         this.project = project;
-        averageDuration.setJob(project);
+        jobWrapper.setJob(project);
     }
 
     @CheckForNull
@@ -45,11 +45,11 @@ public class AbstractAverageDurationAction <JobT extends Job<JobT, RunT>, RunT e
         return null;
     }
 
-    public AverageDuration getAverageDuration() {
-        return averageDuration;
-    }
+//    public AverageDuration getAverageDuration() {
+//        return averageDuration;
+//    }
 
-    public Job<JobT, RunT> getProject() {
+    public Job getProject() {
         return project;
     }
 
@@ -61,7 +61,7 @@ public class AbstractAverageDurationAction <JobT extends Job<JobT, RunT>, RunT e
     }
     @Exported
     public String getAverageBuildDuration() {
-        long averageDuration = getAverageDuration().getEstimatedDuration();
+        long averageDuration = jobWrapper.getEstimatedDuration();
         if (averageDuration > 0)
             return Util.getTimeSpanString(averageDuration);
         return "N/A";

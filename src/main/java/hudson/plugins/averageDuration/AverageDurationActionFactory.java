@@ -11,8 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Extension
-public class AverageDurationActionFactory <JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>>
-        extends TransientActionFactory<Job> {
+public class AverageDurationActionFactory extends TransientActionFactory<Job> {
     @Override
     public Class<Job> type() {
         return Job.class;

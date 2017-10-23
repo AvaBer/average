@@ -2,33 +2,33 @@ package hudson.plugins.averageDuration;
 
 import hudson.Util;
 import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 public class AverageDurationSettings {
-    private int numberOfCandidates = -1;
-    private int buildHistoryPool = -1;
+    private int candidates = 3;
+    private int stepsBack = 6;
+    public final int DEFAULT_NUMBER_OF_CANDIDATES = 3;
+    public final int DEFAULT_NUMBER_OF_STEPS_BACK = 6;
 
-    public AverageDurationSettings(int numberOfCandidates, int buildHistoryPool) {
-        this.numberOfCandidates = numberOfCandidates;
-        this.buildHistoryPool = buildHistoryPool;
+    @DataBoundConstructor
+    public AverageDurationSettings() {
     }
 
-    public void setNumberOfCandidates(String numberOfCandidates) {
-        if (StringUtils.isEmpty(numberOfCandidates)) {
-            this.numberOfCandidates = -1;
-        }
+    public void setCandidates(int candidates) {
+        this.candidates = candidates;
     }
 
-    public void setBuildHistoryPool(String buildHistoryPool) {
-        this.buildHistoryPool = -1;
+    public void setStepsBack(int stepsBack) {
+        this.stepsBack = stepsBack;
     }
 
-    public int getNumberOfCandidates() {
-        return numberOfCandidates;
+    public int getCandidates() {
+        return candidates;
     }
 
-    public int getBuildHistoryPool() {
-        return buildHistoryPool;
+    public int getStepsBack() {
+        return stepsBack;
     }
-
 
 }

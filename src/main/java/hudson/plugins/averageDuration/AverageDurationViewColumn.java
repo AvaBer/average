@@ -3,10 +3,9 @@ package hudson.plugins.averageDuration;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Job;
-import hudson.plugins.averageDuration.utils.AverageDuration;
+import hudson.plugins.averageDuration.utils.JobWrapper;
 import hudson.views.ListViewColumn;
 import hudson.views.ListViewColumnDescriptor;
-import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class AverageDurationViewColumn extends ListViewColumn {
@@ -18,9 +17,9 @@ public class AverageDurationViewColumn extends ListViewColumn {
 
     @SuppressWarnings("unchecked")
     public String getAverageBuildDurationString(Job<?, ?> job) {
-        AverageDuration avgDuration = new AverageDuration();
-        avgDuration.setJob(job);
-        return Util.getTimeSpanString(avgDuration.getEstimatedDuration());
+        JobWrapper jobWrapper = new AverageDuration().getJobWrapper();
+        jobWrapper.setJob(job);
+        return Util.getTimeSpanString(jobWrapper.getEstimatedDuration());
     }
 
     @Extension(ordinal=DEFAULT_COLUMNS_ORDINAL_PROPERTIES_START-5)
