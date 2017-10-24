@@ -1,18 +1,18 @@
 package hudson.plugins.averageDuration;
 
-import hudson.Util;
-import org.apache.commons.lang.StringUtils;
+import hudson.model.Describable;
+import hudson.model.Descriptor;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-
-public class AverageDurationSettings {
+@SuppressWarnings("WeakerAccess")
+public class AverageDurationConfiguration implements Describable {
     private int candidates = 3;
     private int stepsBack = 6;
     public final int DEFAULT_NUMBER_OF_CANDIDATES = 3;
     public final int DEFAULT_NUMBER_OF_STEPS_BACK = 6;
 
     @DataBoundConstructor
-    public AverageDurationSettings() {
+    public AverageDurationConfiguration() {
     }
 
     public void setCandidates(int candidates) {
@@ -31,4 +31,9 @@ public class AverageDurationSettings {
         return stepsBack;
     }
 
+
+    @Override
+    public Descriptor getDescriptor() {
+        return Jenkins.getInstance().getDescriptorOrDie(AverageDurationConfiguration.class);
+    }
 }

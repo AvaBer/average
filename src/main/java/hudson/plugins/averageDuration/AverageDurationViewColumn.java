@@ -9,6 +9,7 @@ import hudson.views.ListViewColumnDescriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class AverageDurationViewColumn extends ListViewColumn {
+    private AverageDurationDescriptor DESCRIPTOR;
 
     @DataBoundConstructor
     public AverageDurationViewColumn() {
@@ -17,7 +18,9 @@ public class AverageDurationViewColumn extends ListViewColumn {
 
     @SuppressWarnings("unchecked")
     public String getAverageBuildDurationString(Job<?, ?> job) {
-        JobWrapper jobWrapper = new AverageDuration().getJobWrapper();
+        DESCRIPTOR = new AverageDurationDescriptor();
+        JobWrapper jobWrapper = new JobWrapper();
+        jobWrapper.setConfiguration(DESCRIPTOR.getConfig());
         jobWrapper.setJob(job);
         return Util.getTimeSpanString(jobWrapper.getEstimatedDuration());
     }
