@@ -1,12 +1,13 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project">
-
     <f:section title="${descriptor.displayName}">
-        <f:entry title="${%Number of steps back in history:}" field="stepsBack">
+        <f:entry title="${%Steps Back:}" field="stepsBack"
+                 description="Set the scope of the build history that will be used to find candidates for the average duration.">
             <f:textbox value="${descriptor.config.stepsBack}"/>
         </f:entry>
-        <f:entry title="${%Number of Candidates to use:}" field="candidates">
+        <f:entry title="${%Candidates:}" field="candidates"
+                 description="Set the target number of candidate builds to find to calculate the average build duration.">
             <f:textbox value="${descriptor.config.candidates}"/>
         </f:entry>
     </f:section>

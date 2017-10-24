@@ -80,7 +80,9 @@ public class JobWrapper<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, Run
             i++;
             r = r.getPreviousBuild();
         }
-        while (candidates.size() < 6) {
+        while (candidates.size() < 3) {
+            if (getTargetCandidatePool() < 3 && candidates.size() == getTargetCandidatePool())
+                break;
             if (fallbackCandidates.isEmpty())
                 break;
             RunT run = fallbackCandidates.remove(0);
