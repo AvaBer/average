@@ -1,8 +1,9 @@
 <div>
-    Set how many steps back in the build history the scope will be to find candidates (Healthy builds).<br/>
-    Higher numbers may increase load time.<br/>
+    Set the number of steps back in the build history the scope will be to find candidates (Healthy builds).<br/>
+    Higher numbers may and probably will increase load time.<br/>
     <br/>
-    for the average build duration calculation. (mostly useful if a job has been failing for a long time)<br/>
+    Set this to a value around a point where the target candidate amount would most likely to reach its goal.<br/>
+    <br/>
     Default: <b>6</b><br/>
     Min Value: 1<br/>
     Max Value: <b>Equal or Greater than Candidates</b> || Integer.MAX_VALUE if you're silly.<br/>
