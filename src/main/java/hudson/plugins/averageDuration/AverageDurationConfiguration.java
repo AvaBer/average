@@ -11,8 +11,8 @@ public class AverageDurationConfiguration implements Describable {
     private int stepsBack = 6;
     public final int DEFAULT_CANDIDATES = 3;
     public final int DEFAULT_STEPS_BACK = 6;
-    public final int MIN_FIELD_VALUE = 1;
-    public final int MAX_FIELD_VALUE = 50;
+    public final int MIN_VALUE = 1;
+    public final int MAX_VALUE = 50;
 
     @DataBoundConstructor
     public AverageDurationConfiguration() {
