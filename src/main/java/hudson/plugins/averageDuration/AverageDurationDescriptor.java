@@ -1,6 +1,7 @@
 package hudson.plugins.averageDuration;
 
 import hudson.Extension;
+import hudson.util.FormApply;
 import hudson.util.FormValidation;
 import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
@@ -16,14 +17,9 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 @Extension
 public class AverageDurationDescriptor extends GlobalConfiguration {
     private static final Logger LOGGER = Logger.getLogger(AverageDurationDescriptor.class.getName());
-    private final AverageDurationConfiguration config = new AverageDurationConfiguration();
+    private AverageDurationConfiguration config = new AverageDurationConfiguration();
     private String candidateName = "Candidates";
     private String stepsBackName = "StepsBack";
-
-    /**
-     * The maximum value for both fields, if a higher value is set this will override it.
-     */
-    private final int MAX_VALUE = 50;
 
     public AverageDurationConfiguration getConfig() {
         return config;
@@ -46,32 +42,25 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
         String stepsBack = json.getString("stepsBack");
         FormValidation validateCandidates = checkStuff(candidates, stepsBack, candidateName, config.DEFAULT_CANDIDATES);
         FormValidation validateStepsBack = checkStuff(candidates, stepsBack, stepsBackName, config.DEFAULT_STEPS_BACK);
-        if (validateCandidates == FormValidation.ok()) {
-            if (validateCandidates != null) {
+        LOGGER.info(json.toString(4));
+        if (validateCandidates.kind == FormValidation.Kind.OK) {
+            if (validateCandidates.toString().contains("default")) {
                 config.setDefaultCandidates();
             } else {
                 config.setCandidates(Integer.valueOf(candidates));
             }
         }
-        if (validateStepsBack == FormValidation.ok()) {
-            if (validateStepsBack != null) {
+        if (validateStepsBack.kind == FormValidation.Kind.OK) {
+            if (validateStepsBack.toString().contains("default")) {
                 config.setDefaultStepsBack();
             } else {
                 config.setStepsBack(Integer.valueOf(stepsBack));
             }
         }
+        if (FormApply.isApply(req))
+            save();
         save();
         return false;
-    }
-
-    private int parseInput(String input, int defaultValue) {
-        if (isEmpty(input.trim()))
-            return defaultValue;
-        try {
-            return Integer.parseInt(input.trim());
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
     }
 
     private int parseInput(String input, String name) throws NumberFormatException {
@@ -96,31 +85,36 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
     }
 
     public FormValidation checkStuff(String candidates, String stepsBack, String targetName, int targetDefaultValue) {
-        int newCandidateValue;
-        int newStepsBackValue;
+        int candidateValue;
+        int stepsBackValue;
         try {
-            newCandidateValue = parseInput(candidates, candidateName);
-            newStepsBackValue = parseInput(stepsBack, stepsBackName);
+            candidateValue = parseInput(candidates, candidateName);
+            stepsBackValue = parseInput(stepsBack, stepsBackName);
         } catch (NumberFormatException nfe) {
             return FormValidation.error(nfe.getMessage());
         }
 
-        if ((newStepsBackValue == -1 && newCandidateValue == -1))
+        if ((stepsBackValue == -1 && candidateValue == -1))
+            return FormValidation.ok("Using default value of: " + targetDefaultValue);
+        if ((targetName.equals(candidateName) && candidateValue == -1
+                && config.DEFAULT_CANDIDATES <= stepsBackValue) ||
+                (targetName.equals(stepsBackName) && stepsBackValue == -1
+                        && config.DEFAULT_STEPS_BACK >= candidateValue))
             return FormValidation.ok("Using default value of: " + targetDefaultValue);
 
-        if ((newCandidateValue == -1 && config.DEFAULT_CANDIDATES <= newStepsBackValue)
-                || (newStepsBackValue == -1 && config.DEFAULT_STEPS_BACK >= newCandidateValue))
-            return FormValidation.ok("Using default value of: " + targetDefaultValue);
-
-        if (newCandidateValue < config.MIN_FIELD_VALUE || newStepsBackValue < config.MIN_FIELD_VALUE)
+        candidateValue = candidateValue == -1 ? config.DEFAULT_CANDIDATES : candidateValue;
+        stepsBackValue = stepsBackValue == -1 ? config.DEFAULT_STEPS_BACK : stepsBackValue;
+        if (targetName.equals(candidateName) && candidateValue < config.MIN_FIELD_VALUE ||
+                targetName.equals(stepsBackName) && stepsBackValue < config.MIN_FIELD_VALUE)
             return FormValidation.error("Minimum value is: " + config.MIN_FIELD_VALUE);
 
-        if (newCandidateValue > config.MAX_FIELD_VALUE || newStepsBackValue > config.MAX_FIELD_VALUE)
+        if (targetName.equals(candidateName) && candidateValue > config.MAX_FIELD_VALUE ||
+                targetName.equals(stepsBackName) && stepsBackValue > config.MAX_FIELD_VALUE)
             return FormValidation.error("Maximum value is: " + config.MAX_FIELD_VALUE);
 
-        if (newCandidateValue <= newStepsBackValue)
+        if (candidateValue <= stepsBackValue)
             return FormValidation.ok();
-        if (targetName.equalsIgnoreCase(candidateName))
+        if (targetName.equals(candidateName))
             return FormValidation.error("Number of candidates must be equal to or smaller than number of steps back ");
         else
             return FormValidation.error("Number of steps back must be equal to or greater than number of candidates ");
