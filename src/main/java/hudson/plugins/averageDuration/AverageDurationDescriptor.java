@@ -17,6 +17,9 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 public class AverageDurationDescriptor extends GlobalConfiguration {
     private static final Logger LOGGER = Logger.getLogger(AverageDurationDescriptor.class.getName());
     private final AverageDurationConfiguration config = new AverageDurationConfiguration();
+    private String candidateName = "Candidates";
+    private String stepsBackName = "StepsBack";
+
     /**
      * The maximum value for both fields, if a higher value is set this will override it.
      */
@@ -30,26 +33,28 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
         load();
     }
 
+
     @Nonnull
     @Override
     public String getDisplayName() {
         return "Average Build Time Configuration";
     }
 
-
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
         String candidates = json.getString("candidates");
         String stepsBack = json.getString("stepsBack");
-        if (doCheckCandidates(candidates, stepsBack) == FormValidation.ok()) {
-            if (doCheckCandidates(candidates, stepsBack).getMessage() != null) {
+        FormValidation validateCandidates = checkStuff(candidates, stepsBack, candidateName, config.DEFAULT_CANDIDATES);
+        FormValidation validateStepsBack = checkStuff(candidates, stepsBack, stepsBackName, config.DEFAULT_STEPS_BACK);
+        if (validateCandidates == FormValidation.ok()) {
+            if (validateCandidates != null) {
                 config.setDefaultCandidates();
             } else {
                 config.setCandidates(Integer.valueOf(candidates));
             }
         }
-        if (doCheckStepsBack(stepsBack, candidates) == FormValidation.ok()) {
-            if (doCheckStepsBack(stepsBack, candidates).getMessage() != null) {
+        if (validateStepsBack == FormValidation.ok()) {
+            if (validateStepsBack != null) {
                 config.setDefaultStepsBack();
             } else {
                 config.setStepsBack(Integer.valueOf(stepsBack));
@@ -81,51 +86,45 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
 
     /* *** Form validation stuffs *** */
     public FormValidation doCheckCandidates(@QueryParameter String candidates, @QueryParameter String stepsBack) {
-        int newCandidates;
-        int newStepsBack;
-        try {
-            newCandidates = parseInput(candidates, "Candidates");
-            newStepsBack = parseInput(stepsBack, "StepsBack");
-        } catch (NumberFormatException nfe) {
-            return FormValidation.error(nfe.getMessage());
-        }
-        if ((newCandidates == -1 && config.DEFAULT_NUMBER_OF_CANDIDATES <= newStepsBack) || (newStepsBack == -1 && newCandidates == -1))
-            return FormValidation.ok("Using default value of: " + config.DEFAULT_NUMBER_OF_CANDIDATES);
-        if (newStepsBack == -1 && newCandidates <= config.DEFAULT_NUMBER_OF_STEPS_BACK)
-            return FormValidation.ok();
-        if (newCandidates < config.MIN_FIELD_VALUE)
-            return FormValidation.error("Minimum value is: " + config.MIN_FIELD_VALUE);
-        if (newCandidates > config.MAX_FIELD_VALUE)
-            return FormValidation.error("Maximum value is: " + config.MAX_FIELD_VALUE);
-
-        if (newCandidates <= newStepsBack)
-            return FormValidation.ok();
-
-        return FormValidation.error("Number of candidates must be equal to or smaller than number of steps back ");
+        return checkStuff(candidates, stepsBack, candidateName, config.DEFAULT_CANDIDATES);
     }
+
 
     // TODO: 2017-10-26 implement the same changes done in doCheckCandidates
     public FormValidation doCheckStepsBack(@QueryParameter String stepsBack, @QueryParameter String candidates) {
-        int newStepsBack;
-        int newCandidates;
+        return checkStuff(candidates, stepsBack, stepsBackName, config.DEFAULT_STEPS_BACK);
+    }
+
+    public FormValidation checkStuff(String candidates, String stepsBack, String targetName, int targetDefaultValue) {
+        int newCandidateValue;
+        int newStepsBackValue;
         try {
-            newStepsBack = parseInput(stepsBack, "StepsBack");
-            newCandidates = parseInput(candidates, "Candidates");
+            newCandidateValue = parseInput(candidates, candidateName);
+            newStepsBackValue = parseInput(stepsBack, stepsBackName);
         } catch (NumberFormatException nfe) {
             return FormValidation.error(nfe.getMessage());
         }
-        if (newStepsBack == -1 && config.DEFAULT_NUMBER_OF_STEPS_BACK >= newCandidates)
-            return FormValidation.ok("Using default value of: " + config.DEFAULT_NUMBER_OF_STEPS_BACK);
 
-        if (newStepsBack < config.MIN_FIELD_VALUE)
+        if ((newStepsBackValue == -1 && newCandidateValue == -1))
+            return FormValidation.ok("Using default value of: " + targetDefaultValue);
+
+        if ((newCandidateValue == -1 && config.DEFAULT_CANDIDATES <= newStepsBackValue)
+                || (newStepsBackValue == -1 && config.DEFAULT_STEPS_BACK >= newCandidateValue))
+            return FormValidation.ok("Using default value of: " + targetDefaultValue);
+
+        if (newCandidateValue < config.MIN_FIELD_VALUE || newStepsBackValue < config.MIN_FIELD_VALUE)
             return FormValidation.error("Minimum value is: " + config.MIN_FIELD_VALUE);
-        if (newStepsBack > config.MAX_FIELD_VALUE)
+
+        if (newCandidateValue > config.MAX_FIELD_VALUE || newStepsBackValue > config.MAX_FIELD_VALUE)
             return FormValidation.error("Maximum value is: " + config.MAX_FIELD_VALUE);
 
-        if (newCandidates <= newStepsBack)
+        if (newCandidateValue <= newStepsBackValue)
             return FormValidation.ok();
-
-        return FormValidation.error("Number of steps back must be equal to or greater than number of candidates ");
+        if (targetName.equalsIgnoreCase(candidateName))
+            return FormValidation.error("Number of candidates must be equal to or smaller than number of steps back ");
+        else
+            return FormValidation.error("Number of steps back must be equal to or greater than number of candidates ");
     }
+
 
 }
