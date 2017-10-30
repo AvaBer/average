@@ -11,19 +11,18 @@ import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.annotation.CheckForNull;
 import java.util.logging.Logger;
+
 @SuppressWarnings("WeakerAccess")
-@ExportedBean(defaultVisibility=2)
+@ExportedBean(defaultVisibility = 2)
 public class AbstractAverageDurationAction implements Action {
     private static final Logger LOGGER = Logger.getLogger(AbstractAverageDurationAction.class.getName());
-    //    private final AverageDuration averageDuration = new AverageDuration();
     private static final AverageDurationDescriptor DESCRIPTOR = new AverageDurationDescriptor();
     private JobWrapper jobWrapper = new JobWrapper();
-    private final Job<?,?> project;
-
+    private final Job<?, ?> project;
 
     @SuppressWarnings("unchecked")
     @DataBoundConstructor
-    public AbstractAverageDurationAction(Job<?,?> project) {
+    public AbstractAverageDurationAction(Job<?, ?> project) {
         this.project = project;
         jobWrapper.setConfiguration(DESCRIPTOR.getConfig());
         jobWrapper.setJob(project);
@@ -47,10 +46,6 @@ public class AbstractAverageDurationAction implements Action {
         return null;
     }
 
-//    public AverageDuration getAverageDuration() {
-//        return averageDuration;
-//    }
-
     public Job getProject() {
         return project;
     }
@@ -61,6 +56,7 @@ public class AbstractAverageDurationAction implements Action {
     public final Api getApi() {
         return new Api(this);
     }
+
     @Exported
     public String getAverageBuildDuration() {
         long averageDuration = jobWrapper.getEstimatedDuration();

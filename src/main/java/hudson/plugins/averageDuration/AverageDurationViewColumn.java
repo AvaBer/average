@@ -25,16 +25,16 @@ public class AverageDurationViewColumn extends ListViewColumn {
         return Util.getTimeSpanString(jobWrapper.getEstimatedDuration());
     }
 
-    @Extension(ordinal=DEFAULT_COLUMNS_ORDINAL_PROPERTIES_START-5)
+    @Extension(ordinal = DEFAULT_COLUMNS_ORDINAL_PROPERTIES_START - 5)
     public static class DescriptorImpl extends ListViewColumnDescriptor {
         @Override
         public boolean shownByDefault() {
-            return true;
+            return false;
         }
 
         @Override
         public String getDisplayName() {
-            return "Average Duration";
+            return Messages.AverageDuration_DisplayName();
         }
 
 

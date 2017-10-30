@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    Displays the estimated build duration of a project in the project REST api and as a view column.
+    Displays the estimated average build duration of a project in the project REST api and as a view column.
 </div>

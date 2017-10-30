@@ -14,6 +14,6 @@ public class AverageDurationAction extends AbstractAverageDurationAction {
     @CheckForNull
     @Override
     public String getDisplayName() {
-        return "Average Duration";
+        return Messages.AverageDuration_DisplayName();
     }
 }

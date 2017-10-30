@@ -3,7 +3,6 @@ package hudson.plugins.averageDuration;
 import hudson.Extension;
 import hudson.model.Action;
 import hudson.model.Job;
-import hudson.model.Run;
 import jenkins.model.TransientActionFactory;
 
 import javax.annotation.Nonnull;
