@@ -37,18 +37,23 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
     }
 
 
+    //    @Nonnull
+//    @Override
+//    public String getDisplayName() {
+//        return "Average Build Time Configuration";
+//    }
     @Nonnull
     @Override
     public String getDisplayName() {
-        return "Average Build Time Configuration";
+        return Messages.DisplayName();
     }
 
     @Override
     public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
         String candidates = json.getString("candidates");
         String stepsBack = json.getString("stepsBack");
-        FormValidation validateCandidates = checkStuff(candidates, stepsBack, candidateName, config.DEFAULT_CANDIDATES);
-        FormValidation validateStepsBack = checkStuff(candidates, stepsBack, stepsBackName, config.DEFAULT_STEPS_BACK);
+        FormValidation validateCandidates = checkFields(candidates, stepsBack, Messages.CandidateName(), config.DEFAULT_CANDIDATES);
+        FormValidation validateStepsBack = checkFields(candidates, stepsBack, Messages.StepsBackName(), config.DEFAULT_STEPS_BACK);
         LOGGER.info(json.toString(4));
         if (validateCandidates.kind == FormValidation.Kind.OK) {
             if (validateCandidates.toString().contains("default")) {
@@ -73,13 +78,11 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
 
     /* *** Form validation stuffs *** */
     public FormValidation doCheckCandidates(@QueryParameter String candidates, @QueryParameter String stepsBack) {
-        return checkStuff(candidates, stepsBack, candidateName, config.DEFAULT_CANDIDATES);
+        return checkFields(candidates, stepsBack, candidateName, config.DEFAULT_CANDIDATES);
     }
 
-
-    // TODO: 2017-10-26 implement the same changes done in doCheckCandidates
     public FormValidation doCheckStepsBack(@QueryParameter String stepsBack, @QueryParameter String candidates) {
-        return checkStuff(candidates, stepsBack, stepsBackName, config.DEFAULT_STEPS_BACK);
+        return checkFields(candidates, stepsBack, stepsBackName, config.DEFAULT_STEPS_BACK);
     }
 
     private int parseInputWithName(String input, String name) throws NumberFormatException {
@@ -126,39 +129,32 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
         return FormValidation.error(requirementError.get(target));
     }
 
-    public FormValidation checkStuffs(String candidatesStr, String stepsBackStr, String target, int defaultVal) {
+    public FormValidation checkFields(String candidatesStr, String stepsBackStr, String target, int defaultVal) {
         int candidates, stepsBack;
-        FormValidation okTargetDefaultValueMessage = FormValidation.ok("Using default value of: " + defaultVal);
         try {
-            candidates = checkInputIntOrExceptionWithMessage(candidatesStr, candidateName);
-            stepsBack = checkInputIntOrExceptionWithMessage(stepsBackStr, stepsBackName);
+            candidates = checkInputIntOrExceptionWithMessage(candidatesStr, Messages.CandidateName(), config.DEFAULT_CANDIDATES);
+            stepsBack = checkInputIntOrExceptionWithMessage(stepsBackStr, Messages.StepsBackName(), config.DEFAULT_STEPS_BACK);
         } catch (NumberFormatException nfe) {
             return FormValidation.error(nfe.getMessage());
         }
-        if (((candidates == stepsBack) && candidates == -1) ||
-                (target.equals(candidateName) && candidates == -1 && defaultVal <= stepsBack) ||
-                (target.equals(stepsBackName) && stepsBack == -1 && defaultVal >= candidates))
-            return FormValidation.ok("Using default value of: " + defaultVal);
-        // Check if value is lower than MIN_VALUE but not -1 which means default
-        if (target.equals(candidateName) && candidates < config.MIN_VALUE && candidates != -1||
-                target.equals(stepsBackName) && stepsBack < config.MIN_VALUE && stepsBack != -1)
+        if ((candidates == config.DEFAULT_CANDIDATES && stepsBack == config.DEFAULT_STEPS_BACK) ||
+                (target.equals(Messages.CandidateName()) &&
+                        candidates == config.DEFAULT_CANDIDATES && defaultVal <= stepsBack) ||
+                (target.equals(Messages.StepsBackName()) &&
+                        stepsBack == config.DEFAULT_STEPS_BACK && defaultVal >= candidates))
+            return FormValidation.ok();
+
+        if (target.equals(candidateName) && candidates < config.MIN_VALUE ||
+                target.equals(stepsBackName) && stepsBack < config.MIN_VALUE)
             return FormValidation.error("Minimum value is: " + config.MIN_VALUE);
 
         if (target.equals(candidateName) && candidates > config.MAX_VALUE ||
                 target.equals(stepsBackName) && stepsBack > config.MAX_VALUE)
-            return FormValidation.error("Maximum value is: " + config.MAX_VALUE);
+            return FormValidation.error(Messages.MaxValueMessage(config.MAX_VALUE));
 
         if (candidates <= stepsBack)
             return FormValidation.ok();
         return FormValidation.error(requirementError.get(target));
-    }
-
-    private Integer valOf(String s) {
-        return valueOf(s);
-    }
-
-    private Integer valOf(int i) {
-        return valueOf(i);
     }
 
     private int checkInputIntOrExceptionWithMessage(String input, String name) throws NumberFormatException {
@@ -168,6 +164,16 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
             return parseInt(input.trim());
         } catch (NumberFormatException e) {
             throw new NumberFormatException("The value of: " + name + ", must be a number or empty");
+        }
+    }
+
+    private int checkInputIntOrExceptionWithMessage(String input, String name, int defaultValue) throws NumberFormatException {
+        try {
+            if (isEmpty(input.trim()) || valueOf(input) < config.MIN_VALUE)
+                return defaultValue;
+            return parseInt(input.trim());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException(Messages.InvalidInput(name));
         }
     }
 }
