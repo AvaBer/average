@@ -10,5 +10,10 @@
                  description="Set the target number of candidate builds to find to calculate the average build duration.">
             <f:textbox value="${descriptor.config.candidates}"/>
         </f:entry>
+        <f:entry title="${%Show on job page:}" field="showOnJobPage">
+            <f:checkbox field="showOnJobPage" checked="${descriptor.config.showOnJobPage}"/>
+        </f:entry>
+
+
     </f:section>
 </j:jelly>

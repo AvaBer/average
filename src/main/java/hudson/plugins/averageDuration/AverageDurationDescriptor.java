@@ -53,10 +53,9 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
             else
                 config.setStepsBack(valueOf(stepsBack));
         }
-        if (FormApply.isApply(req))
-            save();
+        config.setShowOnJobPage(json.getBoolean("showOnJobPage"));
         save();
-        return true;
+        return false;
     }
 
 
@@ -83,10 +82,6 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
                 (target.equals(Messages.StepsBackName()) &&
                         stepsBack == config.DEFAULT_STEPS_BACK && defaultVal >= candidates))
             return FormValidation.ok(Messages.UseDefaultValueMessage(defaultVal));
-
-        if (target.equals(Messages.CandidatesName()) && candidates < config.MIN_VALUE ||
-                target.equals(Messages.StepsBackName()) && stepsBack < config.MIN_VALUE)
-            return FormValidation.error("Minimum value is: " + config.MIN_VALUE);
 
         if (target.equals(Messages.CandidatesName()) && candidates > config.MAX_VALUE ||
                 target.equals(Messages.StepsBackName()) && stepsBack > config.MAX_VALUE)

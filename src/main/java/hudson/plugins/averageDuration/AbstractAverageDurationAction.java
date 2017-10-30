@@ -16,13 +16,14 @@ import java.util.logging.Logger;
 @ExportedBean(defaultVisibility = 2)
 public class AbstractAverageDurationAction implements Action {
     private static final Logger LOGGER = Logger.getLogger(AbstractAverageDurationAction.class.getName());
-    private static final AverageDurationDescriptor DESCRIPTOR = new AverageDurationDescriptor();
+    private static transient AverageDurationDescriptor DESCRIPTOR;
     private JobWrapper jobWrapper = new JobWrapper();
     private final Job<?, ?> project;
 
     @SuppressWarnings("unchecked")
     @DataBoundConstructor
     public AbstractAverageDurationAction(Job<?, ?> project) {
+        DESCRIPTOR = new AverageDurationDescriptor();
         this.project = project;
         jobWrapper.setConfiguration(DESCRIPTOR.getConfig());
         jobWrapper.setJob(project);
@@ -51,12 +52,24 @@ public class AbstractAverageDurationAction implements Action {
     }
 
     /**
+     * Used by the action.jelly page.
+     * If true a text-box will be shown on the job page, otherwise nothing will be displayed on that page.
+     */
+    public boolean isShowOnJobPage() {
+        return DESCRIPTOR.getConfig().isShowOnJobPage();
+    }
+
+    /**
      * Remote API access.
      */
     public final Api getApi() {
         return new Api(this);
     }
 
+    /**
+     * Shows the estimated build duration on the job/job-name/api page
+     * optionally displays the same information on the job/job-name/ page on the sidebar
+     */
     @Exported
     public String getAverageBuildDuration() {
         long averageDuration = jobWrapper.getEstimatedDuration();

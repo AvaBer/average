@@ -3,5 +3,13 @@
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project">
     <j:set var="averageBuildTime" value="${%Average Build Time: }${action.averageBuildDuration}"/>
     <!--<l:task href="./api" title="${averageBuildTime}" icon="empty.png" post="false"/>-->
-    <f:readOnlyTextbox value="${averageBuildTime}"/>
+    <!--<j:if test="${action.showOnJobPage}">-->
+    <!--<f:readOnlyTextbox value="${averageBuildTime}"/>-->
+    <!--</j:if>-->
+    <j:choose>
+        <j:when test="${action.showOnJobPage}">
+            <f:readOnlyTextbox value="${averageBuildTime}"/>
+        </j:when>
+        <j:otherwise/>
+    </j:choose>
 </j:jelly>

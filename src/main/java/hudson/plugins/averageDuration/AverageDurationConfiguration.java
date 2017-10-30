@@ -13,6 +13,7 @@ public class AverageDurationConfiguration implements Describable {
     public final int DEFAULT_STEPS_BACK = 6;
     public final int MIN_VALUE = 1;
     public final int MAX_VALUE = 50;
+    private boolean showOnJobPage = false;
 
     @DataBoundConstructor
     public AverageDurationConfiguration() {
@@ -34,6 +35,10 @@ public class AverageDurationConfiguration implements Describable {
         this.stepsBack = stepsBack;
     }
 
+    public void setShowOnJobPage(boolean showOnJobPage) {
+        this.showOnJobPage = showOnJobPage;
+    }
+
     public int getCandidates() {
         return candidates;
     }
@@ -42,6 +47,9 @@ public class AverageDurationConfiguration implements Describable {
         return stepsBack;
     }
 
+    public boolean isShowOnJobPage() {
+        return showOnJobPage;
+    }
 
     @Override
     public Descriptor getDescriptor() {
