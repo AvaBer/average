@@ -36,7 +36,5 @@ public class AverageDurationViewColumn extends ListViewColumn {
         public String getDisplayName() {
             return Messages.AverageDuration_DisplayName();
         }
-
-
     }
 }

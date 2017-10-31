@@ -1,7 +1,6 @@
 package hudson.plugins.averageDuration;
 
 import hudson.Extension;
-import hudson.util.FormApply;
 import hudson.util.FormValidation;
 import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
@@ -9,7 +8,6 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
-import java.util.logging.Logger;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.Integer.valueOf;
@@ -18,7 +16,6 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 @SuppressWarnings("Duplicates")
 @Extension
 public class AverageDurationDescriptor extends GlobalConfiguration {
-    private static final Logger LOGGER = Logger.getLogger(AverageDurationDescriptor.class.getName());
     private AverageDurationConfiguration config = new AverageDurationConfiguration();
 
     public AverageDurationConfiguration getConfig() {
@@ -55,11 +52,10 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
         }
         config.setShowOnJobPage(json.getBoolean("showOnJobPage"));
         save();
-        return false;
+        return true;
     }
 
-
-    /* *** Form validation stuffs *** */
+    /* *** FormValidation used in config.jelly *** */
     public FormValidation doCheckCandidates(@QueryParameter String candidates, @QueryParameter String stepsBack) {
         return checkFields(candidates, stepsBack, Messages.CandidatesName(), config.DEFAULT_CANDIDATES);
     }
@@ -68,7 +64,20 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
         return checkFields(candidates, stepsBack, Messages.StepsBackName(), config.DEFAULT_STEPS_BACK);
     }
 
-    public FormValidation checkFields(String candidatesStr, String stepsBackStr, String target, int defaultVal) {
+    /**
+     * Used by the doCheck methods validate the input on the configuration page and to save the input in configure()
+     * <p>
+     * Combined logic for both fields because they depend on each other.
+     * @param candidatesStr the amount of candidates to be used in the average duration pool
+     * @param stepsBackStr  the number of steps back in the build history to find candidates
+     * @param target        the name of the field is being checked
+     * @param defaultVal    the default value of the target, used for feedback if the default value will be used.
+     * @return multiple returns:<p>
+     * Errors if the input cannot be parsed to an integer or fails to meet the requirement of its counterpart<br>
+     * OK for a valid input<br>
+     * OK with message if the default value will be used (checked on "save" to use the default value in configure())
+     */
+    private FormValidation checkFields(String candidatesStr, String stepsBackStr, String target, int defaultVal) {
         int candidates, stepsBack;
         try {
             candidates = checkInputIntOrException(candidatesStr, Messages.CandidatesName(), config.DEFAULT_CANDIDATES);
@@ -93,6 +102,11 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
                 Messages.Candidates_Req() : Messages.StepsBack_Req());
     }
 
+    /**
+     * Parses the input if possible, returns the default value of the field if the input is empty
+     * or if the value is less than 1. <br>
+     * Throws an exception with a message if the field cannot be parsed.
+     */
     private int checkInputIntOrException(String input, String name, int defaultValue)
             throws NumberFormatException {
         try {

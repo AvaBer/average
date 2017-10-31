@@ -10,12 +10,10 @@ import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.annotation.CheckForNull;
-import java.util.logging.Logger;
 
 @SuppressWarnings("WeakerAccess")
 @ExportedBean(defaultVisibility = 2)
 public class AbstractAverageDurationAction implements Action {
-    private static final Logger LOGGER = Logger.getLogger(AbstractAverageDurationAction.class.getName());
     private static transient AverageDurationDescriptor DESCRIPTOR;
     private JobWrapper jobWrapper = new JobWrapper();
     private final Job<?, ?> project;
@@ -52,8 +50,11 @@ public class AbstractAverageDurationAction implements Action {
     }
 
     /**
-     * Used by the action.jelly page.
+     * Used by the action.jelly page.<p>
+     * The value is false by default, true if set on the global configuration page.<br>
      * If true a text-box will be shown on the job page, otherwise nothing will be displayed on that page.
+     *
+     * @return show on job page: true/false
      */
     public boolean isShowOnJobPage() {
         return DESCRIPTOR.getConfig().isShowOnJobPage();
@@ -61,14 +62,18 @@ public class AbstractAverageDurationAction implements Action {
 
     /**
      * Remote API access.
+     *
+     * @return itself as a visible item in the REST Api
      */
     public final Api getApi() {
         return new Api(this);
     }
 
     /**
-     * Shows the estimated build duration on the job/job-name/api page
+     * Shows the estimated build duration on the job/job-name/api page<br>
      * optionally displays the same information on the job/job-name/ page on the sidebar
+     *
+     * @return the average duration as a string if available else "N/A"
      */
     @Exported
     public String getAverageBuildDuration() {

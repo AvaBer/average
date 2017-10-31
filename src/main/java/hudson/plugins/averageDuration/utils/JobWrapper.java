@@ -7,11 +7,9 @@ import hudson.plugins.averageDuration.AverageDurationConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @SuppressWarnings("Duplicates")
 public class JobWrapper<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>> {
-    private static final Logger LOGGER = Logger.getLogger(JobWrapper.class.getName());
     private AverageDurationConfiguration configuration;
     private transient Job<JobT, RunT> job;
 
@@ -46,6 +44,11 @@ public class JobWrapper<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, Run
         return this.job.getLastBuild();
     }
 
+    /**
+     * Sums up the duration of all candidate builds then divides them by the size of the list.<p>
+     * This is a modified version of the method in the {@link Job} class.
+     * @return Average duration in milliseconds
+     */
     public long getEstimatedDuration() {
         List<RunT> builds = getEstimatedDurationCandidates();
         if (builds.isEmpty()) return -1;
@@ -57,6 +60,18 @@ public class JobWrapper<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, Run
         return Math.round((double) totalDuration / builds.size());
     }
 
+    /**
+     * Returns a set number of candidate builds for calculating the average build time of a job,
+     * the amount is set in the jenkins global configuration page.
+     * <p>
+     * This is a configurable version of the method in the {@link Job} class.
+     * <p>
+     * If the list contains less than 3 candidates, then up to 3 fallback candidates (unsuccessful builds)
+     * will be appended to it, unless a lower value is set then that will be the goal.
+     * <p>
+     * the fallback candidates are never aborted builds.
+     * @return ArrayList of candidates, empty if no builds exist.
+     */
     private List<RunT> getEstimatedDurationCandidates() {
         List<RunT> candidates = new ArrayList<RunT>(getTargetCandidatePool());
         List<RunT> fallbackCandidates = new ArrayList<RunT>(getTargetCandidatePool());

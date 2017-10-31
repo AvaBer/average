@@ -1,4 +1,5 @@
 <?jelly escape-by-default='true'?>
 <div>
-    Displays the estimated average build duration of a project in the project REST api and as a view column.
+    Displays the average build time of a job in the job REST api as an action with a configurable average pool,<br/>
+    optionally as a view column or as text on the job page.
 </div>

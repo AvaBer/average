@@ -5,6 +5,9 @@ import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+/**
+ * Savable configuration for the plugin used to decide the pool for the average build duration calculation
+ */
 @SuppressWarnings("WeakerAccess")
 public class AverageDurationConfiguration implements Describable {
     private int candidates = 3;

@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
 
-@Extension
+@Extension(ordinal = -200)
 public class AverageDurationActionFactory extends TransientActionFactory<Job> {
     @Override
     public Class<Job> type() {
