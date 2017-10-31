@@ -2,13 +2,11 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project">
     <j:set var="averageBuildTime" value="${%Average Build Time: }${action.averageBuildDuration}"/>
-    <!--<l:task href="./api" title="${averageBuildTime}" icon="empty.png" post="false"/>-->
-    <!--<j:if test="${action.showOnJobPage}">-->
-    <!--<f:readOnlyTextbox value="${averageBuildTime}"/>-->
-    <!--</j:if>-->
     <j:choose>
         <j:when test="${action.showOnJobPage}">
-            <f:readOnlyTextbox value="${averageBuildTime}"/>
+            <div id="tasks" class="task fixed-width" style="margin-top: 14px; text-align: center">
+                <st:out value="${averageBuildTime}"/>
+            </div>
         </j:when>
         <j:otherwise/>
     </j:choose>
