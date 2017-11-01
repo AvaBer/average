@@ -12,7 +12,7 @@ import org.kohsuke.stapler.export.ExportedBean;
 import javax.annotation.CheckForNull;
 
 @SuppressWarnings("WeakerAccess")
-@ExportedBean(defaultVisibility = 2)
+@ExportedBean
 public class AbstractAverageDurationAction implements Action {
     private static transient AverageDurationDescriptor DESCRIPTOR;
     private JobWrapper jobWrapper = new JobWrapper();
@@ -75,7 +75,7 @@ public class AbstractAverageDurationAction implements Action {
      *
      * @return the average duration as a string if available else "N/A"
      */
-    @Exported
+    @Exported(visibility = 2, name = "AverageDuration")
     public String getAverageBuildDuration() {
         long averageDuration = jobWrapper.getEstimatedDuration();
         if (averageDuration > 0)
