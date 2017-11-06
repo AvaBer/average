@@ -4,9 +4,8 @@ import hudson.Util;
 import hudson.model.Action;
 import hudson.model.Api;
 import hudson.model.Job;
+import hudson.model.Run;
 import hudson.plugins.averageDuration.utils.JobWrapper;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -94,5 +93,28 @@ public class AbstractAverageDurationAction implements Action {
             return averageDuration;
         return -1;
     }
+
+    public String getEstimatedTimeRemaining() {
+        long estimatedTimeRemaining;
+        if (project.isBuilding()) {
+            Run<?, ?> lastBuild = project.getLastBuild();
+            estimatedTimeRemaining = System.currentTimeMillis() - lastBuild.getStartTimeInMillis();
+            if (getAverageBuildDurationMilliseconds() - estimatedTimeRemaining >= 0)
+                return Util.getTimeSpanString(getAverageBuildDurationMilliseconds() - estimatedTimeRemaining);
+        }
+        return "N/A";
+    }
+
+    public String getOvertime() {
+        long estimatedTimeRemaining;
+        if (project.isBuilding()) {
+            Run<?, ?> lastBuild = project.getLastBuild();
+            estimatedTimeRemaining = System.currentTimeMillis() - lastBuild.getStartTimeInMillis();
+            if (getEstimatedTimeRemaining().equals("N/A"))
+                return Util.getTimeSpanString(estimatedTimeRemaining - getAverageBuildDurationMilliseconds());
+        }
+        return "N/A";
+    }
+
 
 }

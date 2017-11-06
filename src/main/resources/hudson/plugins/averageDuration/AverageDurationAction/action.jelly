@@ -1,11 +1,83 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project">
-    <j:set var="averageBuildTime" value="${%Average Build Time: }${action.averageBuildDuration}"/>
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project" xmlns:i="jelly:fmt">
+    <j:set var="avgBuildTime" value="${%avgTime(action.averageBuildDuration)}"/>
+    <j:set var="build" value="${action.project.lastBuild}"/>
+    <j:set var="lSuccessful" value="${action.project.lastSuccessfulBuild}"/>
+    <j:choose>
+        <j:when test="${action.project.isBuilding()}">
+            <j:set var="buildStarted" value="${build.executor.timestampString == null?'N/A':build.executor.timestampString}"/>
+            <j:set var="estimatedTimeLeft" value="${action.estimatedTimeRemaining}"/>
+            <j:set var="pos" value="${build.executor.progress}"/>
+            <j:choose>
+                <j:when test="${estimatedTimeLeft == 'N/A'}">
+                    <j:set var="tdTooltip" value="${%textOvertime(buildStarted,action.overtime)}"/>
+                    <j:set var="overtime" value="true"/>
+                </j:when>
+                <j:otherwise>
+                    <j:set var="tdTooltip" value="${%textDuration(buildStarted,estimatedTimeLeft)}"/>
+                </j:otherwise>
+            </j:choose>
+        </j:when>
+        <j:otherwise>
+            <j:set var="tdTooltip" value="${%lastSuccessful(lSuccessful.number,lSuccessful.durationString)}"/>
+        </j:otherwise>
+    </j:choose>
+
     <j:choose>
         <j:when test="${action.showOnJobPage}">
-            <div id="tasks" class="task fixed-width" style="margin-top: 14px; text-align: center">
-                <st:out value="${averageBuildTime}"/>
+            <div style="cursor:default; border: 1px solid #bbb; margin-top: 20px; max-width: 330px;"
+                    class="build-row" tooltip="${tdTooltip}">
+
+                <div class="pane build-details block">
+                    <div class="pane build-details block fixed-width ">
+                        <st:out value="${avgBuildTime}"/>
+                    </div>
+                </div>
+                <j:choose>
+                    <j:when test="${action.project.isBuilding()}">
+
+                            <div class="pane build-details block">
+                                <div class="pane build-details block fixed-width ">
+                                    <st:out value="${%started(buildStarted)}"/>
+                                </div>
+                            </div>
+
+
+                            <table class="pane build-details progress-bar" href="./api"
+                                   style="width: 100%; cursor: pointer; height: 8px ">
+                                <j:choose>
+                                    <j:when test="${pos lt 0}">
+                                        <tbody>
+                                            <tr class="unknown">
+                                                <td/>
+                                            </tr>
+                                        </tbody>
+                                    </j:when>
+                                    <j:otherwise>
+
+                                        <tbody class="fixed-width">
+                                            <tr style="width: 100%">
+                                                <j:choose>
+                                                    <j:when test="${estimatedTimeLeft != 'N/A'}">
+                                                        <td class="progress-bar-done" style="width:${pos}%;"/>
+                                                        <td class="progress-bar-left" style="width:${100-pos}%;"/>
+                                                    </j:when>
+                                                    <j:otherwise>
+                                                        <tr class="unknown">
+                                                            <td/>
+                                                        </tr>
+                                                    </j:otherwise>
+                                                </j:choose>
+                                            </tr>
+                                        </tbody>
+                                    </j:otherwise>
+                                </j:choose>
+                            </table>
+                        <!--</div>-->
+                    </j:when>
+                </j:choose>
+
             </div>
         </j:when>
         <j:otherwise/>
