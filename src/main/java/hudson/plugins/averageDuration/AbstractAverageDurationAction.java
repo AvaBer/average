@@ -5,6 +5,8 @@ import hudson.model.Action;
 import hudson.model.Api;
 import hudson.model.Job;
 import hudson.plugins.averageDuration.utils.JobWrapper;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -12,9 +14,10 @@ import org.kohsuke.stapler.export.ExportedBean;
 import javax.annotation.CheckForNull;
 
 @SuppressWarnings("WeakerAccess")
-@ExportedBean
+@ExportedBean(defaultVisibility = 10)
 public class AbstractAverageDurationAction implements Action {
-    private static transient AverageDurationDescriptor DESCRIPTOR;
+    private static AverageDurationDescriptor DESCRIPTOR;
+    private AverageDurationConfiguration config;
     private JobWrapper jobWrapper = new JobWrapper();
     private final Job<?, ?> project;
 
@@ -22,8 +25,9 @@ public class AbstractAverageDurationAction implements Action {
     @DataBoundConstructor
     public AbstractAverageDurationAction(Job<?, ?> project) {
         DESCRIPTOR = new AverageDurationDescriptor();
+        config = DESCRIPTOR.getConfig();
         this.project = project;
-        jobWrapper.setConfiguration(DESCRIPTOR.getConfig());
+        jobWrapper.setConfiguration(config);
         jobWrapper.setJob(project);
     }
 
@@ -75,11 +79,20 @@ public class AbstractAverageDurationAction implements Action {
      *
      * @return the average duration as a string if available else "N/A"
      */
-    @Exported(visibility = 2, name = "AverageDuration")
+    @Exported(name = "averageduration")
     public String getAverageBuildDuration() {
         long averageDuration = jobWrapper.getEstimatedDuration();
         if (averageDuration > 0)
             return Util.getTimeSpanString(averageDuration);
         return "N/A";
     }
+
+    @Exported(name = "averageduration-millis")
+    public long getAverageBuildDurationMilliseconds() {
+        long averageDuration = jobWrapper.getEstimatedDuration();
+        if (averageDuration > 0)
+            return averageDuration;
+        return -1;
+    }
+
 }
