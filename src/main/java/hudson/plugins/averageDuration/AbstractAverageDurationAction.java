@@ -94,27 +94,5 @@ public class AbstractAverageDurationAction implements Action {
         return -1;
     }
 
-    public String getEstimatedTimeRemaining() {
-        long estimatedTimeRemaining;
-        if (project.isBuilding()) {
-            Run<?, ?> lastBuild = project.getLastBuild();
-            estimatedTimeRemaining = System.currentTimeMillis() - lastBuild.getStartTimeInMillis();
-            if (getAverageBuildDurationMilliseconds() - estimatedTimeRemaining >= 0)
-                return Util.getTimeSpanString(getAverageBuildDurationMilliseconds() - estimatedTimeRemaining);
-        }
-        return "N/A";
-    }
-
-    public String getOvertime() {
-        long estimatedTimeRemaining;
-        if (project.isBuilding()) {
-            Run<?, ?> lastBuild = project.getLastBuild();
-            estimatedTimeRemaining = System.currentTimeMillis() - lastBuild.getStartTimeInMillis();
-            if (getEstimatedTimeRemaining().equals("N/A"))
-                return Util.getTimeSpanString(estimatedTimeRemaining - getAverageBuildDurationMilliseconds());
-        }
-        return "N/A";
-    }
-
 
 }

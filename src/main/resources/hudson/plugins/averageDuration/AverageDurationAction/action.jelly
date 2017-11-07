@@ -1,33 +1,42 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project" xmlns:i="jelly:fmt">
+    <style>
+        .avgBox{cursor:default; border: 1px solid #bbb; margin-top: 20px; max-width: 330px; overflow-wrap: break-word;}
+        table.progress-bar.avgBar{width: 100%; cursor: pointer; height: 8px;}
+    </style>
     <j:set var="avgBuildTime" value="${%avgTime(action.averageBuildDuration)}"/>
-    <j:set var="build" value="${action.project.lastBuild}"/>
-    <j:set var="lSuccessful" value="${action.project.lastSuccessfulBuild}"/>
+    <j:set var="project" value="${action.project}"/>
+    <j:set var="lBuildExec" value="${project.lastBuild.executor}"/>
+    <j:set var="lSuccessful" value="${project.lastSuccessfulBuild}"/>
     <j:choose>
-        <j:when test="${action.project.isBuilding()}">
-            <j:set var="buildStarted" value="${build.executor.timestampString == null?'N/A':build.executor.timestampString}"/>
+        <j:when test="${project.isBuilding()}">
+            <j:set var="buildStarted" value="${lBuildExec.timestampString == null?'N/A':lBuildExec.timestampString}"/>
             <j:set var="estimatedTimeLeft" value="${action.estimatedTimeRemaining}"/>
-            <j:set var="pos" value="${build.executor.progress}"/>
+            <j:set var="pos" value="${action.buildProgress}"/>
             <j:choose>
                 <j:when test="${estimatedTimeLeft == 'N/A'}">
                     <j:set var="tdTooltip" value="${%textOvertime(buildStarted,action.overtime)}"/>
-                    <j:set var="overtime" value="true"/>
                 </j:when>
                 <j:otherwise>
                     <j:set var="tdTooltip" value="${%textDuration(buildStarted,estimatedTimeLeft)}"/>
                 </j:otherwise>
             </j:choose>
         </j:when>
+        <j:when test="${project.iconColor == 'notbuilt'}">
+            <j:set var="avgBuildTime" value="${%notBuilt(project.name)}"/>
+            <j:set var="tdTooltip" value="${%notBuilt(project.name)}"/>
+        </j:when>
         <j:otherwise>
             <j:set var="tdTooltip" value="${%lastSuccessful(lSuccessful.number,lSuccessful.durationString)}"/>
         </j:otherwise>
     </j:choose>
+    <!--Data binding end-->
 
+    <!--content start-->
     <j:choose>
         <j:when test="${action.showOnJobPage}">
-            <div style="cursor:default; border: 1px solid #bbb; margin-top: 20px; max-width: 330px;"
-                    class="build-row" tooltip="${tdTooltip}">
+            <div class="build-row avgBox" tooltip="${tdTooltip}">
 
                 <div class="pane build-details block">
                     <div class="pane build-details block fixed-width ">
@@ -36,48 +45,34 @@
                 </div>
                 <j:choose>
                     <j:when test="${action.project.isBuilding()}">
-
-                            <div class="pane build-details block">
-                                <div class="pane build-details block fixed-width ">
-                                    <st:out value="${%started(buildStarted)}"/>
-                                </div>
+                        <div class="pane build-details block">
+                            <div class="pane build-details block fixed-width ">
+                                <st:out value="${%started(buildStarted)}"/>
                             </div>
-
-
-                            <table class="pane build-details progress-bar" href="./api"
-                                   style="width: 100%; cursor: pointer; height: 8px ">
-                                <j:choose>
-                                    <j:when test="${pos lt 0}">
-                                        <tbody>
-                                            <tr class="unknown">
-                                                <td/>
-                                            </tr>
-                                        </tbody>
-                                    </j:when>
-                                    <j:otherwise>
-
-                                        <tbody class="fixed-width">
-                                            <tr style="width: 100%">
-                                                <j:choose>
-                                                    <j:when test="${estimatedTimeLeft != 'N/A'}">
-                                                        <td class="progress-bar-done" style="width:${pos}%;"/>
-                                                        <td class="progress-bar-left" style="width:${100-pos}%;"/>
-                                                    </j:when>
-                                                    <j:otherwise>
-                                                        <tr class="unknown">
-                                                            <td/>
-                                                        </tr>
-                                                    </j:otherwise>
-                                                </j:choose>
-                                            </tr>
-                                        </tbody>
-                                    </j:otherwise>
-                                </j:choose>
-                            </table>
-                        <!--</div>-->
+                        </div>
+                        <!--Uses the buildProgress method from action to fill the progress bar-->
+                        <table class="pane build-details progress-bar avgBar" href="./api">
+                            <j:choose>
+                                <!--Use striped unknown.gif when the position is unknown eg. not built or no history-->
+                                <j:when test="${pos2 lt 0}">
+                                    <tbody>
+                                        <tr class="unknown">
+                                            <td/>
+                                        </tr>
+                                    </tbody>
+                                </j:when>
+                                <j:otherwise>
+                                    <tbody>
+                                        <tr>
+                                            <td class="progress-bar-done" style="width:${pos}%;"/>
+                                            <td class="progress-bar-left" style="width:${100-pos}%;"/>
+                                        </tr>
+                                    </tbody>
+                                </j:otherwise>
+                            </j:choose>
+                        </table>
                     </j:when>
                 </j:choose>
-
             </div>
         </j:when>
         <j:otherwise/>
