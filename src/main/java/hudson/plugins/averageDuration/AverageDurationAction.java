@@ -9,7 +9,7 @@ import org.kohsuke.stapler.export.CustomExportedBean;
 
 import javax.annotation.CheckForNull;
 
-public class AverageDurationAction extends AbstractAverageDurationAction implements CustomExportedBean{
+public class AverageDurationAction extends AbstractAverageDurationAction implements CustomExportedBean {
     @DataBoundConstructor
     public AverageDurationAction(Job project) {
         super(project);
@@ -29,9 +29,11 @@ public class AverageDurationAction extends AbstractAverageDurationAction impleme
                 .accumulate("averageduration-millis", getAverageBuildDurationMilliseconds());
         if (getProject().isBuilding()) {
             json.accumulate("started", Util.getPastTimeString(currentBuildDuration()));
-            if (!getEstimatedTimeRemaining().equals("N/A"))
-                json.accumulate("estimated-remaining-time", getEstimatedTimeRemaining());
-            else json.accumulate("estimated-remaining-time", getOvertime() + " overdue");
+            if (getProject().getIconColor() != BallColor.NOTBUILT) {
+                if (!getEstimatedTimeRemaining().equals("N/A"))
+                    json.accumulate("estimated-remaining-time", getEstimatedTimeRemaining());
+                else json.accumulate("estimated-remaining-time", getOvertime() + " overdue");
+            }
         }
         return json;
     }
@@ -62,7 +64,7 @@ public class AverageDurationAction extends AbstractAverageDurationAction impleme
         if (getProject().getLastBuild().isBuilding()) {
             if (d <= 0)
                 return -1;
-            int num = (int)(currentBuildDuration() * 100 / d);
+            int num = (int) (currentBuildDuration() * 100 / d);
             if (num >= 100)
                 return 99;
             return num;

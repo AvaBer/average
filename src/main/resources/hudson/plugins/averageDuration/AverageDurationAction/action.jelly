@@ -54,7 +54,7 @@
                         <table class="pane build-details progress-bar avgBar" href="./api">
                             <j:choose>
                                 <!--Use striped unknown.gif when the position is unknown eg. not built or no history-->
-                                <j:when test="${pos2 lt 0}">
+                                <j:when test="${pos lt 0}">
                                     <tbody>
                                         <tr class="unknown">
                                             <td/>
