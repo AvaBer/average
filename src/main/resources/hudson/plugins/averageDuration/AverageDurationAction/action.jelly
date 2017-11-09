@@ -23,7 +23,7 @@
                 </j:otherwise>
             </j:choose>
         </j:when>
-        <j:when test="${project.iconColor == 'notbuilt'}">
+        <j:when test="${project.iconColor == 'notbuilt' || project.iconColor == 'notbuilt_anime}">
             <j:set var="avgBuildTime" value="${%notBuilt(project.name)}"/>
             <j:set var="tdTooltip" value="${%notBuilt(project.name)}"/>
         </j:when>

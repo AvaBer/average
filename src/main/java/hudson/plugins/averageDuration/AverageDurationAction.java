@@ -29,7 +29,7 @@ public class AverageDurationAction extends AbstractAverageDurationAction impleme
                 .accumulate("averageduration-millis", getAverageBuildDurationMilliseconds());
         if (getProject().isBuilding()) {
             json.accumulate("started", Util.getPastTimeString(currentBuildDuration()));
-            if (getProject().getIconColor() != BallColor.NOTBUILT) {
+            if (getProject().getIconColor() != BallColor.NOTBUILT_ANIME) {
                 if (!getEstimatedTimeRemaining().equals("N/A"))
                     json.accumulate("estimated-remaining-time", getEstimatedTimeRemaining());
                 else json.accumulate("estimated-remaining-time", getOvertime() + " overdue");
