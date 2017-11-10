@@ -1,41 +1,48 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:p="/lib/hudson/project" xmlns:i="jelly:fmt">
-    <style>
-        .avgBox{cursor:default; border: 1px solid #bbb; margin-top: 20px; max-width: 330px; overflow-wrap: break-word;}
-        table.progress-bar.avgBar{width: 100%; cursor: pointer; height: 8px;}
-    </style>
-    <j:set var="avgBuildTime" value="${%avgTime(action.averageBuildDuration)}"/>
-    <j:set var="project" value="${action.project}"/>
-    <j:set var="lBuildExec" value="${project.lastBuild.executor}"/>
-    <j:set var="lSuccessful" value="${project.lastSuccessfulBuild}"/>
-    <j:choose>
-        <j:when test="${project.isBuilding()}">
-            <j:set var="buildStarted" value="${lBuildExec.timestampString == null?'N/A':lBuildExec.timestampString}"/>
-            <j:set var="estimatedTimeLeft" value="${action.estimatedTimeRemaining}"/>
-            <j:set var="pos" value="${action.buildProgress}"/>
-            <j:choose>
-                <j:when test="${estimatedTimeLeft == 'N/A'}">
-                    <j:set var="tdTooltip" value="${%textOvertime(buildStarted,action.overtime)}"/>
-                </j:when>
-                <j:otherwise>
-                    <j:set var="tdTooltip" value="${%textDuration(buildStarted,estimatedTimeLeft)}"/>
-                </j:otherwise>
-            </j:choose>
-        </j:when>
-        <j:when test="${project.iconColor == 'notbuilt' || project.iconColor == 'notbuilt_anime}">
-            <j:set var="avgBuildTime" value="${%notBuilt(project.name)}"/>
-            <j:set var="tdTooltip" value="${%notBuilt(project.name)}"/>
-        </j:when>
-        <j:otherwise>
-            <j:set var="tdTooltip" value="${%lastSuccessful(lSuccessful.number,lSuccessful.durationString)}"/>
-        </j:otherwise>
-    </j:choose>
-    <!--Data binding end-->
-
-    <!--content start-->
     <j:choose>
         <j:when test="${action.showOnJobPage}">
+            <style>
+                .avgBox{cursor:default; border: 1px solid #bbb; margin-top: 20px; max-width: 330px; overflow-wrap:
+                break-word;}
+                table.progress-bar.avgBar{width: 100%; cursor: pointer; height: 8px;}
+            </style>
+            <j:set var="avgBuildTime" value="${%avgTime(action.averageBuildDuration)}"/>
+            <j:set var="project" value="${action.project}"/>
+            <j:set var="lBuildExec" value="${project.lastBuild.executor}"/>
+            <j:set var="lSuccessful" value="${project.lastSuccessfulBuild}"/>
+            <j:choose>
+                <j:when test="${project.isBuilding()}">
+
+                    <j:set var="buildStarted"
+                           value="${lBuildExec.timestampString == null?'N/A':lBuildExec.timestampString}"/>
+                    <j:set var="estimatedTimeLeft" value="${action.estimatedTimeRemaining}"/>
+                    <j:set var="pos" value="${action.buildProgress}"/>
+                    <j:choose>
+                        <j:when test="${ project.iconColor == 'notbuilt_anime'}">
+                            <j:set var="tdTooltip" value="${%notBuilt(project.name)}"/>
+                        </j:when>
+                        <j:when test="${estimatedTimeLeft == 'N/A'}">
+                            <j:set var="tdTooltip" value="${%textOvertime(buildStarted,action.overtime)}"/>
+                        </j:when>
+                        <j:otherwise>
+                            <j:set var="tdTooltip" value="${%textDuration(buildStarted,estimatedTimeLeft)}"/>
+                        </j:otherwise>
+                    </j:choose>
+                </j:when>
+                <j:when test="${project.iconColor == 'notbuilt'}${ project.iconColor == 'notbuilt_anime'}">
+                    <j:set var="avgBuildTime" value="${%notBuilt(project.name)}"/>
+                    <j:set var="tdTooltip" value="${%notBuilt(project.name)}"/>
+                </j:when>
+                <j:otherwise>
+                    <j:set var="tdTooltip" value="${%lastSuccessful(lSuccessful.number,lSuccessful.durationString)}"/>
+                </j:otherwise>
+            </j:choose>
+            <!--Data binding end-->
+
+            <!--content start-->
+
             <div class="build-row avgBox" tooltip="${tdTooltip}">
 
                 <div class="pane build-details block">
