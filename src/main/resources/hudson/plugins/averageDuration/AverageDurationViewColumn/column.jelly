@@ -9,7 +9,7 @@
         <j:when test="${job.getLastBuild() != null}">
             <j:set var="sortData" value="0"/>
             <j:set var="buildDurationString" value="${it.getAverageBuildDurationString(job)}"/>
-            <j:set var="naTooltip" value="${%Last build took: } ${job.lastBuild.durationString}"/>
+            <j:set var="naTooltip" value="${%Last successful build took: } ${job.lastSuccessfulBuild.durationString}"/>
         </j:when>
     </j:choose>
     <td data="${sortData}" tooltip="${naTooltip}">${buildDurationString}</td>

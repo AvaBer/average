@@ -13,7 +13,6 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Integer.valueOf;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
-@SuppressWarnings("Duplicates")
 @Extension
 public class AverageDurationDescriptor extends GlobalConfiguration {
     private AverageDurationConfiguration config = new AverageDurationConfiguration();

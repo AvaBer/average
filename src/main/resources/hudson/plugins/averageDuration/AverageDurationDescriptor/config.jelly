@@ -13,7 +13,5 @@
         <f:entry title="${%Show on job page:}" field="showOnJobPage">
             <f:checkbox field="showOnJobPage" checked="${descriptor.config.showOnJobPage}"/>
         </f:entry>
-
-
     </f:section>
 </j:jelly>

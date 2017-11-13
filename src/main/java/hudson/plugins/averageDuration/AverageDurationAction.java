@@ -6,10 +6,11 @@ import hudson.model.Job;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.export.CustomExportedBean;
+import org.kohsuke.stapler.export.Exported;
 
 import javax.annotation.CheckForNull;
 
-public class AverageDurationAction extends AbstractAverageDurationAction implements CustomExportedBean {
+public class AverageDurationAction extends AbstractAverageDurationAction  {
     @DataBoundConstructor
     public AverageDurationAction(Job project) {
         super(project);
@@ -21,12 +22,14 @@ public class AverageDurationAction extends AbstractAverageDurationAction impleme
         return Messages.AverageDuration_DisplayName();
     }
 
-    @Override
-    public Object toExportedObject() {
-        JSONObject json = new JSONObject()
-                .accumulate("_class", this.getClass())
-                .accumulate("averageduration", getAverageBuildDuration())
-                .accumulate("averageduration-millis", getAverageBuildDurationMilliseconds());
+    /**
+     * Exported to the job/api, if the job has a running build some additional info will be displayed there.<br>
+     * "skipNull = true" allows this not to be rendered unless the job has a build running.
+     * @return null if not building otherwise some additional info.
+     */
+    @Exported(name = "build-progress", skipNull = true)
+    public JSONObject buildProgress() {
+        JSONObject json = new JSONObject();
         if (getProject().isBuilding()) {
             json.accumulate("started", Util.getPastTimeString(currentBuildDuration()));
             if (getProject().getIconColor() != BallColor.NOTBUILT_ANIME) {
@@ -34,8 +37,9 @@ public class AverageDurationAction extends AbstractAverageDurationAction impleme
                     json.accumulate("estimated-remaining-time", getEstimatedTimeRemaining());
                 else json.accumulate("estimated-remaining-time", getOvertime() + " overdue");
             }
+            return json;
         }
-        return json;
+        return null;
     }
 
 
@@ -47,6 +51,10 @@ public class AverageDurationAction extends AbstractAverageDurationAction impleme
         return "N/A";
     }
 
+    /**
+     * Used in action.jelly as a tooltip when a build is running and exported in the build-progress.
+     * If a build runs longer than the time estimate this method will give the time passed since the estimate.
+     */
     public String getOvertime() {
         if (getProject().isBuilding()) {
             if (getEstimatedTimeRemaining().equals("N/A"))
@@ -55,10 +63,19 @@ public class AverageDurationAction extends AbstractAverageDurationAction impleme
         return "N/A";
     }
 
+    /**
+     * @return duration since build started
+     */
     private long currentBuildDuration() {
         return System.currentTimeMillis() - getProject().getLastBuild().getStartTimeInMillis();
     }
 
+    /**
+     * Used in action.jelly for the progress-bar to fill up.<br>
+     * this is a percentage representation of the estimated build progress,
+     * returns -1 if no builds exist of if it's impossible to calculate.
+     * @return estimated build progress
+     */
     public int getBuildProgress() {
         long d = getAverageBuildDurationMilliseconds();
         if (getProject().getLastBuild().isBuilding()) {
