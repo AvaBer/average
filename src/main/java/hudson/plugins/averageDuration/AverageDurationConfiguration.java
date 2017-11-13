@@ -22,6 +22,12 @@ public class AverageDurationConfiguration implements Describable {
     public AverageDurationConfiguration() {
     }
 
+    public AverageDurationConfiguration(AverageDurationConfiguration config) {
+        this.candidates = config.candidates;
+        this.stepsBack = config.stepsBack;
+        this.showOnJobPage = config.showOnJobPage;
+    }
+
     public void setDefaultCandidates() {
         candidates = DEFAULT_CANDIDATES;
     }

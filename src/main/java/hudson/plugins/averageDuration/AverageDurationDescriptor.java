@@ -19,7 +19,7 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
     private AverageDurationConfiguration config = new AverageDurationConfiguration();
 
     public AverageDurationConfiguration getConfig() {
-        return config;
+        return new AverageDurationConfiguration(config);
     }
 
     public AverageDurationDescriptor() {
