@@ -5,7 +5,6 @@ import hudson.model.BallColor;
 import hudson.model.Job;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.export.CustomExportedBean;
 import org.kohsuke.stapler.export.Exported;
 
 import javax.annotation.CheckForNull;

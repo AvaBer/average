@@ -4,7 +4,6 @@ import hudson.Util;
 import hudson.model.Action;
 import hudson.model.Api;
 import hudson.model.Job;
-import hudson.model.Run;
 import hudson.plugins.averageDuration.utils.JobWrapper;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.export.Exported;
