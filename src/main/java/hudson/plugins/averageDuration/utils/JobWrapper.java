@@ -86,10 +86,12 @@ public class JobWrapper<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, Run
         while (r != null && candidates.size() < getTargetCandidatePool() && i < getTargetNumberOfStepsBack()) {
             if (!r.isBuilding() && r.getResult() != null && r.getNumber() != lastSuccessfulNumber) {
                 Result result = r.getResult();
-                if (result.isBetterOrEqualTo(Result.UNSTABLE)) {
-                    candidates.add(r);
-                } else if (result.isCompleteBuild()) {
-                    fallbackCandidates.add(r);
+                if (result != null) {
+                    if (result.isBetterOrEqualTo(Result.UNSTABLE)) {
+                        candidates.add(r);
+                    } else if (result.isCompleteBuild()) {
+                        fallbackCandidates.add(r);
+                    }
                 }
             }
             i++;

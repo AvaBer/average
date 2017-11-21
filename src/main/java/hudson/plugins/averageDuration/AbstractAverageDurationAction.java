@@ -15,7 +15,7 @@ import javax.annotation.CheckForNull;
 @SuppressWarnings("WeakerAccess")
 @ExportedBean(defaultVisibility = 10)
 public class AbstractAverageDurationAction implements Action {
-    private static AverageDurationDescriptor DESCRIPTOR;
+    private AverageDurationDescriptor DESCRIPTOR;
     private AverageDurationConfiguration config;
     private JobWrapper jobWrapper = new JobWrapper();
     private final Job<?, ?> project;
