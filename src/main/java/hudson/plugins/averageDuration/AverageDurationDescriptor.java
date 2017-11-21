@@ -35,8 +35,8 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
     public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
         String candidates = json.getString("candidates");
         String stepsBack = json.getString("stepsBack");
-        FormValidation vC = checkFields(candidates, stepsBack, Messages.AverageDurationDescriptor_CandidatesName(), config.DEFAULT_CANDIDATES);
-        FormValidation vS = checkFields(candidates, stepsBack, Messages.AverageDurationDescriptor_StepsBackName(), config.DEFAULT_STEPS_BACK);
+        FormValidation vC = checkFields(candidates, stepsBack, Messages.Avg_CandidatesName(), config.DEFAULT_CANDIDATES);
+        FormValidation vS = checkFields(candidates, stepsBack, Messages.Avg_StepsBackName(), config.DEFAULT_STEPS_BACK);
         if (vC.kind == FormValidation.Kind.OK) {
             if (vC.toString().contains("default"))
                 config.setDefaultCandidates();
@@ -56,11 +56,11 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
 
     /* *** FormValidation used in config.jelly *** */
     public FormValidation doCheckCandidates(@QueryParameter String candidates, @QueryParameter String stepsBack) {
-        return checkFields(candidates, stepsBack, Messages.AverageDurationDescriptor_CandidatesName(), config.DEFAULT_CANDIDATES);
+        return checkFields(candidates, stepsBack, Messages.Avg_CandidatesName(), config.DEFAULT_CANDIDATES);
     }
 
     public FormValidation doCheckStepsBack(@QueryParameter String stepsBack, @QueryParameter String candidates) {
-        return checkFields(candidates, stepsBack, Messages.AverageDurationDescriptor_StepsBackName(), config.DEFAULT_STEPS_BACK);
+        return checkFields(candidates, stepsBack, Messages.Avg_StepsBackName(), config.DEFAULT_STEPS_BACK);
     }
 
     /**
@@ -79,26 +79,26 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
     private FormValidation checkFields(String candidatesStr, String stepsBackStr, String target, int defaultVal) {
         int candidates, stepsBack;
         try {
-            candidates = checkInputIntOrException(candidatesStr, Messages.AverageDurationDescriptor_CandidatesName(), config.DEFAULT_CANDIDATES);
-            stepsBack = checkInputIntOrException(stepsBackStr, Messages.AverageDurationDescriptor_StepsBackName(), config.DEFAULT_STEPS_BACK);
+            candidates = checkInputIntOrException(candidatesStr, Messages.Avg_CandidatesName(), config.DEFAULT_CANDIDATES);
+            stepsBack = checkInputIntOrException(stepsBackStr, Messages.Avg_StepsBackName(), config.DEFAULT_STEPS_BACK);
         } catch (NumberFormatException nfe) {
             return FormValidation.error(nfe.getMessage());
         }
         if ((candidates == config.DEFAULT_CANDIDATES && stepsBack == config.DEFAULT_STEPS_BACK) ||
-                (target.equals(Messages.AverageDurationDescriptor_CandidatesName()) &&
+                (target.equals(Messages.Avg_CandidatesName()) &&
                         candidates == config.DEFAULT_CANDIDATES && defaultVal <= stepsBack) ||
-                (target.equals(Messages.AverageDurationDescriptor_StepsBackName()) &&
+                (target.equals(Messages.Avg_StepsBackName()) &&
                         stepsBack == config.DEFAULT_STEPS_BACK && defaultVal >= candidates))
-            return FormValidation.ok(Messages.AverageDurationDescriptor_UseDefaultValueMessage(defaultVal));
+            return FormValidation.ok(Messages.Avg_UseDefaultValueMessage(defaultVal));
 
-        if (target.equals(Messages.AverageDurationDescriptor_CandidatesName()) && candidates > config.MAX_VALUE ||
-                target.equals(Messages.AverageDurationDescriptor_StepsBackName()) && stepsBack > config.MAX_VALUE)
+        if (target.equals(Messages.Avg_CandidatesName()) && candidates > config.MAX_VALUE ||
+                target.equals(Messages.Avg_StepsBackName()) && stepsBack > config.MAX_VALUE)
             return FormValidation.error(Messages.Avg_MaxValueMessage(config.MAX_VALUE));
 
         if (candidates <= stepsBack)
             return FormValidation.ok();
-        return FormValidation.error(target.equals(Messages.AverageDurationDescriptor_CandidatesName()) ?
-                Messages.AverageDurationDescriptor_Candidates_Req() : Messages.AverageDurationDescriptor_StepsBack_Req());
+        return FormValidation.error(target.equals(Messages.Avg_CandidatesName()) ?
+                Messages.Avg_Candidates_Req() : Messages.Avg_StepsBack_Req());
     }
 
     /**
@@ -113,7 +113,7 @@ public class AverageDurationDescriptor extends GlobalConfiguration {
                 return defaultValue;
             return parseInt(input.trim());
         } catch (NumberFormatException e) {
-            throw new NumberFormatException(Messages.AverageDurationDescriptor_InvalidInput(name));
+            throw new NumberFormatException(Messages.Avg_InvalidInput(name));
         }
     }
 }
