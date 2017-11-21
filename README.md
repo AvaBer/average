@@ -3,7 +3,7 @@
 ### Lowest compatible version of Jenkins
 Jenkins v2.7.2 as stated in the POM file
 ### Requirements for building the artifact
-Java 8 (Java 7 might work, compatibility not tested)<br>
+Java 8 (Possibly Java 7. Compatibility not tested, lists have explicit type declaration and no use of lambdas)<br>
 Apache-Maven 3.* (compatibility not tested with lower versions)
 ~~~
 To run the plugin in a dev-environment the maven plugin Hpi-plugin is needed
