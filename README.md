@@ -1,10 +1,19 @@
 # Average Duration Plugin
 
-## Installation and requirements
-The artifact is built using apache-maven and Java.
+### Lowest compatible version of Jenkins
+Jenkins v2.7.2 as stated in the POM file
+### Requirements for building the artifact
+Java 8 (Java 7 might work, compatibility not tested)<br>
+Apache-Maven 3.* (compatibility not tested with lower versions)
 ~~~
-1. Build the artifact in cmd/terminal with the command:
-    "mvn compile package" or "mvn clean compile package" if the directory "target" exists.
+To run the plugin in a dev-environment the maven plugin Hpi-plugin is needed
+~~~
+### Building and Installing the plugin
+~~~
+1. Build the artifact in cmd/terminal with one of these commands: 
+(First command runs "injectedTests/findBugs", Second command skips tests and is faster)
+    mvn clean install
+    mvn -Dmaven.test.skip=true -DskipTests=true clean install
 2. Within jenkins go to the page:
     manage jenkins -> plugin manager -> advanced
 3. Press "choose file" in the upload plugin section
@@ -31,7 +40,6 @@ The last successful build is always added if present.
 The plugins implementation behaves the same way except the number of candidates and the history scope can be changed.
 By allowing the build history scope to be changed can increase the chance for successful builds to be found,
 being able to set the candidate pool may not be particularly useful in most cases but it is there if needed.
-
 ## Additional information about what does what and where.
 
 #### AverageDurationDescriptor
