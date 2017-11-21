@@ -1,4 +1,15 @@
 # Average Duration Plugin
+
+## Installation and requirements
+The artifact is built using apache-maven and Java.
+~~~
+1. Build the artifact in cmd/terminal with the command:
+    "mvn compile package" or "mvn clean compile package" if the directory "target" exists.
+2. Within jenkins go to the page:
+    manage jenkins -> plugin manager -> advanced
+3. Press "choose file" in the upload plugin section
+    select the built artifact in target/averageduration.hpi then press "upload"
+~~~
 ## TLDR;
 The plugin displays an average build time estimate of a job in the job/api page,
 and optionally as a view-column on the dashboard or as a field in the side panel of the main page of a job.
